@@ -96,11 +96,11 @@ def main():
                  caption=['Original Image', 'Hilbert-Transformed Image', 'Deconvolved Image'],
                  width=300)
 
-        other_image_path = 'Testd.png'
-        other_image = io.imread(other_image_path)
-        hilbert_transformed_resized = resize_image(hilbert_transformed, other_image.shape[:2])
-        similarity_index = compare_images(hilbert_transformed_resized, other_image)
-        st.write(f'Similarity Index (Hilbert-transformed vs Other Image): {similarity_index}')
+        # other_image_path = 'Testd.png'
+        # other_image = io.imread(other_image_path)
+        # hilbert_transformed_resized = resize_image(hilbert_transformed, other_image.shape[:2])
+        # similarity_index = compare_images(hilbert_transformed_resized, other_image)
+        # st.write(f'Similarity Index (Hilbert-transformed vs Other Image): {similarity_index}')
 
 if __name__ == "__main__":
     main()
