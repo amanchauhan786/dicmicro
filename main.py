@@ -1,9 +1,4 @@
 import streamlit as st
-
-# Install required dependencies
-st.run("sudo apt-get update")
-st.run("sudo apt-get install -y libgl1-mesa-glx")
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
