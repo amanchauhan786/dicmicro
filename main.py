@@ -7,17 +7,10 @@ from skimage import io, color, transform
 from scipy.ndimage import gaussian_filter
 from scipy.stats import zscore
 from scipy import signal
+import streamlit as st
 
-
-#background
+# Background
 def set_bg_hack_url():
-    '''
-    A function to unpack an image from url and set as bg.
-    Returns
-    -------
-    The background.
-    '''
-
     st.markdown(
         f"""
          <style>
@@ -64,12 +57,26 @@ def compare_images(image1, image2):
 def richardson_lucy(image, psf, iterations=30):
     # Richardson-Lucy deconvolution
     estimate = np.full_like(image, 0.5)
+
+    # Convert image and psf to 2D arrays if they are not already
+    image = np.atleast_2d(image)
+    psf = np.atleast_2d(psf)
+
     psf_mirror = psf[::-1, ::-1]
 
-    for _ in range(iterations):
-        for channel in range(image.shape[2]):
-            relative_blur = image[:, :, channel] / convolve2d(estimate[:, :, channel], psf, 'same', 'symm')
-            estimate[:, :, channel] *= convolve2d(relative_blur, psf_mirror, 'same', 'symm')
+    try:
+        for _ in range(iterations):
+            for channel in range(image.shape[2]):
+                # Convert estimate to 2D array
+                estimate_channel = np.atleast_2d(estimate[:, :, channel])
+
+                relative_blur = image[:, :, channel] / convolve2d(estimate_channel, psf, 'same', 'symm')
+                estimate_channel *= convolve2d(relative_blur, psf_mirror, 'same', 'symm')
+
+    except ValueError as e:
+        st.warning(f"Error during deconvolution: {e}")
+        # You can add additional error handling or return a default value if needed
+        return np.zeros_like(image)
 
     return estimate
 
@@ -90,17 +97,13 @@ def main():
         psf = np.ones(hilbert_transformed.shape) / np.prod(hilbert_transformed.shape)
 
         # Use richardson_lucy from scipy for deconvolution
-        deconvolved = richardson_lucy(hilbert_transformed, psf, iterations=30)
-
-        st.image([image, hilbert_transformed, deconvolved],
-                 caption=['Original Image', 'Hilbert-Transformed Image', 'Deconvolved Image'],
-                 width=300)
-
-        # other_image_path = 'Testd.png'
-        # other_image = io.imread(other_image_path)
-        # hilbert_transformed_resized = resize_image(hilbert_transformed, other_image.shape[:2])
-        # similarity_index = compare_images(hilbert_transformed_resized, other_image)
-        # st.write(f'Similarity Index (Hilbert-transformed vs Other Image): {similarity_index}')
+        # deconvolved = richardson_lucy(hilbert_transformed, psf, iterations=30)
+        #
+        # st.image([image, hilbert_transformed, deconvolved],
+        #          caption=['Original Image', 'Hilbert-Transformed Image', 'Deconvolved Image'],
+        #          width=300)
+        #
+        # st.write(f'Similarity Index (Hilbert-transformed vs Uploaded Image): {compare_images(hilbert_transformed, image)}')
 
 if __name__ == "__main__":
     main()
