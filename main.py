@@ -1,3 +1,4 @@
+import streamlit as st
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,9 +7,8 @@ from skimage import io, color, transform
 from scipy.ndimage import gaussian_filter
 from scipy.stats import zscore
 from scipy import signal
-import streamlit as st
 
-import streamlit as st
+
 st.run("sudo apt-get update")
 st.run("sudo apt-get install -y libgl1-mesa-glx")
 
