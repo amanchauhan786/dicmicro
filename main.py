@@ -8,6 +8,10 @@ from scipy.stats import zscore
 from scipy import signal
 import streamlit as st
 
+import streamlit as st
+st.run("sudo apt-get update")
+st.run("sudo apt-get install -y libgl1-mesa-glx")
+
 #background
 def set_bg_hack_url():
     '''
